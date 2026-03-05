@@ -1,0 +1,38 @@
+class Solution {
+    public String decodeString(String s) {
+
+        Deque<Integer> repeatCountStack = new ArrayDeque<>();
+        Deque<StringBuilder> stringStack = new ArrayDeque<>();
+
+        StringBuilder currentSegment = new StringBuilder();
+        int currentNumber = 0;
+
+        for (char currentChar : s.toCharArray()) {
+            if (Character.isDigit(currentChar)) {
+                currentNumber = currentNumber * 10 + (currentChar - '0');
+
+            } else if (currentChar == '[') {
+                repeatCountStack.push(currentNumber);
+                stringStack.push(currentSegment);
+
+                currentSegment = new StringBuilder();
+                currentNumber = 0;
+
+            } else if (currentChar == ']') {
+                int repeatTimes = repeatCountStack.pop();
+                StringBuilder previousSegment = stringStack.pop();
+
+                StringBuilder expandedSegment = new StringBuilder();
+                for (int i = 0; i < repeatTimes; i++) {
+                    expandedSegment.append(currentSegment);
+                }
+
+                currentSegment = previousSegment.append(expandedSegment);
+
+            } else {
+                currentSegment.append(currentChar);
+            }
+        }
+        return currentSegment.toString();
+    }
+}
